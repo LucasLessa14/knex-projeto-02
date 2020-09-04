@@ -125,23 +125,21 @@ class Category {
         }
     }
 
-    async incrementAmount(id) {
-
+    async updateAmount(id, number) {
         var category = await this.findById(id);
 
-        console.log(category);
-
         if (category != undefined) {
+            category.amount = category.amount + number;
             
             try {
-                await knex.update({ amount: 5 }).where({ id: id }).table('category');
+                await knex.update({ amount: category.amount }).where({ id: id }).table('category');
                 return { status: true };
             } catch (err) {
                 console.log(err);
-                return { status: false, err: 'Não foi possível atualizar a categoria' };
+                return { status: false, err: 'Erro ao atualizar a amount em categoria' };
             }            
         } else {
-            return { status: false, err: 'Categoria não existe, portanto não foi atualizada' };
+            return { status: false, err: 'Categoria não existe' };
         }
     }
 }

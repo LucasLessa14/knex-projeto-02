@@ -63,6 +63,8 @@ class ComponentController {
         } else {
             try {
                 var result = await Component.new(name, amount, category_id, compartment_id);
+                await Compartment.updateAmount(compartment_id, 1);
+                await Category.updateAmount(category_id, 1);
                 res.json(result);
                 return;
             } catch (err) {
@@ -117,17 +119,33 @@ class ComponentController {
     async remove(req,res) {
         var id = req.params.id;
 
-        var result = await Component.delete(id);
+        var component = await Component.findById(id);
 
-        if (result.status) {
-            res.status(200);
-            res.send(result);
+        if (component != undefined) {
+            
+            try {
+                var result = await Component.delete(id);
+    
+                if (result.status) {
+                    await Compartment.updateAmount(component.compartment_id, -1);
+                    await Category.updateAmount(component.category_id, -1);
+                    res.status(200).send(result);
+                    return;
+                } else {
+                    res.status(406).json(result.err);
+                    return;
+                }
+    
+            } catch (err) {
+                console.log(err);
+                res.status(406).json({err: 'Não foi possível deletar o componente'});
+                return;
+            }
         } else {
-            res.status(406);
-            res.json(result.err);
+            res.status(406).json({err: 'Componente não existe'});
+            return;
         }
     }
-
 }
 
 module.exports = new ComponentController();

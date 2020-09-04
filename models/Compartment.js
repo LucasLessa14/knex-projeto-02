@@ -125,23 +125,21 @@ class Compartment {
         }
     }
 
-    async incrementAmount(id) {
-
+    async updateAmount(id, number) {
         var compartment = await this.findById(id);
 
-        console.log(compartment);
-
         if (compartment != undefined) {
+            compartment.amount = compartment.amount + number;
             
             try {
-                await knex.update({ amount: 5 }).where({ id: id }).table('compartment');
+                await knex.update({ amount: compartment.amount }).where({ id: id }).table('compartment');
                 return { status: true };
             } catch (err) {
                 console.log(err);
-                return { status: false, err: 'Não foi possível atualizar a compartimento' };
+                return { status: false, err: 'Erro ao atualizar a amount em categoria' };
             }            
         } else {
-            return { status: false, err: 'Compartimento não existe, portanto não foi atualizada' };
+            return { status: false, err: 'Categoria não existe' };
         }
     }
 }
