@@ -7,6 +7,11 @@ class CategoryController {
         res.json(categories);
     }
 
+    async list(req, res) {
+        var categories = await Category.getNames();
+        res.json(categories);
+    }
+
     async findCategory(req, res) {
         var id = req.params.id;
         var category = await Category.findById(id);

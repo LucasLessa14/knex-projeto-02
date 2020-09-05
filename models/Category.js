@@ -44,6 +44,16 @@ class Category {
         }
     }
 
+    async getNames() {
+        try {
+            var result = await knex.select(['id', 'name', 'amount']).table('category');
+            return result;
+        } catch (err) {
+            console.log(err);
+            return undefined;
+        }
+    }
+
     async new(name, description) {
         try {
             await knex.insert({ name, description, amount: 0 }).table('category');

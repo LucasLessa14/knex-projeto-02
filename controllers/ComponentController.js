@@ -63,8 +63,8 @@ class ComponentController {
         } else {
             try {
                 var result = await Component.new(name, amount, category_id, compartment_id);
-                await Compartment.updateAmount(compartment_id, 1);
-                await Category.updateAmount(category_id, 1);
+                await Compartment.updateAmount(compartment_id, amount);
+                await Category.updateAmount(category_id, amount);
                 res.json(result);
                 return;
             } catch (err) {
@@ -127,8 +127,8 @@ class ComponentController {
                 var result = await Component.delete(id);
     
                 if (result.status) {
-                    await Compartment.updateAmount(component.compartment_id, -1);
-                    await Category.updateAmount(component.category_id, -1);
+                    await Compartment.updateAmount(component.compartment_id, -1 * amount);
+                    await Category.updateAmount(component.category_id, -1 * amount);
                     res.status(200).send(result);
                     return;
                 } else {
